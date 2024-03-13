@@ -1,0 +1,80 @@
+import heapq
+
+# Define the goal state
+goal_state = [1, 2, 3, 4, 5, 6, 7, 8, 0]  # 0 represents the blank tile
+
+# Define the moves
+moves = [(1, 3), (0, 2, 4), (1, 5), (0, 4, 6), (1, 3, 5, 7), (2, 4, 8), (3, 7), (4, 6, 8), (5, 7)]
+
+# Define the heuristic function (Manhattan distance)
+def heuristic(state):
+    h = 0
+    for i in range(9):
+        if state[i] != 0:
+            h += abs(i // 3 - (state[i] - 1) // 3) + abs(i % 3 - (state[i] - 1) % 3)
+    return h
+
+# Define a class for puzzle states
+class PuzzleState:
+    def __init__(self, state, g, h, prev):
+        self.state = state
+        self.g = g
+        self.h = h
+        self.prev = prev
+
+    def __lt__(self, other):
+        return self.g + self.h < other.g + other.h
+
+# Define function to get successors
+def get_successors(state):
+    successors = []
+    blank_index = state.state.index(0)
+    for move in moves[blank_index]:
+        new_state = state.state[:]
+        new_state[blank_index], new_state[move] = new_state[move], new_state[blank_index]
+        successors.append(PuzzleState(new_state, state.g + 1, heuristic(new_state), state))
+    return successors
+
+# Define A* algorithm
+def a_star(initial_state):
+    visited = set()
+    heap = [initial_state]
+    heapq.heapify(heap)
+    while heap:
+        state = heapq.heappop(heap)
+        if state.state == goal_state:
+            path = []
+            while state:
+                path.append(state.state)
+                state = state.prev
+            return path[::-1]
+        if tuple(state.state) in visited:
+            continue
+        visited.add(tuple(state.state))
+        successors = get_successors(state)
+        for successor in successors:
+            if tuple(successor.state) not in visited:
+                heapq.heappush(heap, successor)
+
+# Define function to print the solution path
+def print_solution(path):
+    for state in path:
+        print(state[0:3])
+        print(state[3:6])
+        print(state[6:9])
+        print()
+
+# Example usage
+initial_state = PuzzleState([1, 2, 3, 4, 5, 6, 7, 0, 8], 0, heuristic([1, 2, 3, 4, 5, 6, 7, 0, 8]), None)
+solution_path = a_star(initial_state)
+print_solution(solution_path)
+OUTPUT:
+[1, 2, 3]
+[4, 5, 6]
+[7, 0, 8]
+
+[1, 2, 3]
+[4, 5, 6]
+[7, 8, 0]
+
+> 
