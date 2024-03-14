@@ -1,0 +1,62 @@
+def is_consistent(state, color, neighbors, assignment):
+    """Check if the color assignment for the current state is consistent."""
+    for neighbor in neighbors[state]:
+        if neighbor in assignment and assignment[neighbor] == color:
+            return False
+    return True
+
+def backtracking_search(states, colors, neighbors):
+    """Backtracking search to solve the map coloring problem."""
+    return backtrack({}, states, colors, neighbors)
+
+def backtrack(assignment, states, colors, neighbors):
+    """Recursive function to backtrack and find a solution."""
+    if len(assignment) == len(states):
+        return assignment
+    
+    state = None
+    for s in states:
+        if s not in assignment:
+            state = s
+            break
+    
+    for color in colors:
+        if is_consistent(state, color, neighbors, assignment):
+            assignment[state] = color
+            result = backtrack(assignment, states, colors, neighbors)
+            if result:
+                return result
+            assignment.pop(state)
+    
+    return None
+
+# Example usage:
+states = ['WA', 'NT', 'SA', 'Q', 'NSW', 'V', 'T']
+colors = ['Red', 'Green', 'Blue']
+neighbors = {
+    'WA': ['NT', 'SA'],
+    'NT': ['WA', 'SA', 'Q'],
+    'SA': ['WA', 'NT', 'Q', 'NSW', 'V'],
+    'Q': ['NT', 'SA', 'NSW'],
+    'NSW': ['Q', 'SA', 'V'],
+    'V': ['SA', 'NSW'],
+    'T': []
+}
+
+solution = backtracking_search(states, colors, neighbors)
+if solution:
+    print("Solution found:")
+    for state, color in solution.items():
+        print(f"{state}: {color}")
+else:
+    print("No solution found")
+OUTPUT:
+Solution found:
+WA: Red
+NT: Green
+SA: Blue
+Q: Red
+NSW: Green
+V: Red
+T: Red
+> 
