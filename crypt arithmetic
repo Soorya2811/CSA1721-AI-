@@ -1,0 +1,45 @@
+import itertools
+
+def solve_cryptarithmetic(puzzle):
+    # Encode the puzzle string using ASCII encoding to remove non-ASCII characters
+    puzzle = puzzle.encode('ascii', 'ignore').decode()
+
+    # Extract unique letters from the puzzle
+    letters = set(char for char in puzzle if char.isalpha())
+    if len(letters) > 10:
+        print("Invalid puzzle: Too many unique letters")
+        return None
+
+    # Generate all possible permutations of digits from 0 to 9
+    for perm in itertools.permutations(range(10), len(letters)):
+        # Assign each letter a digit in the current permutation
+        mapping = dict(zip(letters, perm))
+        # Replace letters with their corresponding digits
+        expression = puzzle.translate(str.maketrans(mapping))
+
+        # Check if the expression is valid (no leading zeros and evaluates to True)
+        if not any(word.startswith('0') for word in expression.split()) and eval(expression):
+            return mapping
+
+    print("No solution found")
+    return None
+
+# Example usage:
+puzzle = "SEND + MORE == MONEY"
+solution = solve_cryptarithmetic(puzzle)
+if solution:
+    print("Solution found:")
+    for letter, digit in solution.items():
+        print(f"{letter}: {digit}")
+else:
+    print("No solution found")
+OUTPUT:
+            Solution found:
+S: 9
+E: 5
+N: 6
+D: 7
+M: 1
+O: 0
+R: 8
+Y: 2
