@@ -1,0 +1,24 @@
+#using formula
+def sum_up_to_n_formula(n):
+    return n * (n + 1) // 2
+
+# Example usage:
+n = 100
+result = sum_up_to_n_formula(n)
+print("Sum of integers from 1 to", n, ":", result)
+OUTPUT:Sum of integers from 1 to 100 : 5050
+
+
+> #using loop
+def sum_up_to_n_loop(n):
+    total = 0
+    for i in range(1, n + 1):
+        total += i
+    return total
+
+# Example usage:
+n = 100
+result = sum_up_to_n_loop(n)
+print("Sum of integers from 1 to", n, ":", result)
+OUTPUT:Sum of integers from 1 to 100 : 5050
+> 
